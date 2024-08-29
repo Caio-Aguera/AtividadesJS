@@ -1,1 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <script language= “JavaScript” type=“text/JavaScript”></script>
+    <title>index</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        ol {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <form id="inputForm">
+        <label for="inputValue">Digite um valor:</label>
+        <input type="text" id="inputValue" required>
+        <button type="submit">Adicionar</button>
+    </form>
 
+    <h2>Lista Ordenada:</h2>
+    <ol id="sortedList"></ol>
+
+    <script>
+        let values = [];
+
+        function updateList() {
+            values.sort();
+            const list = document.getElementById('sortedList');
+            list.innerHTML = '';
+
+            values.forEach(value => {
+                const li = document.createElement('li');
+                li.textContent = value;
+                list.appendChild(li);
+            });
+        }
+
+        document.getElementById('inputForm').addEventListener('submit', function(event) {
+    
+            event.preventDefault();
+            
+            const inputValue = document.getElementById('inputValue').value.trim();
+            
+            if (inputValue && !values.includes(inputValue)) {
+            
+                values.push(inputValue);
+            
+                updateList();
+            }
+            
+            document.getElementById('inputValue').value = '';
+        });
+    </script>
+</body>
+</html>
