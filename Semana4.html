@@ -1,1 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Cadastro</title>
+    <style>
+        body {
+            font-family: Helvetica, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
 
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 26px;
+            color: #000;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 10px;
+            color: #222;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            font-size: 12px;
+            color: #999;
+            border: none;
+            border-bottom: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        input:focus, select:focus {
+            border-bottom: 1px solid #000;
+            outline: none;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 10px;
+            margin-top: 5px;
+        }
+
+        button {
+            padding: 10px 15px;
+            font-size: 12px;
+            background-color: #eee;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #ddd;
+        }
+
+        .user-specific-fields {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cadastro</h1>
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="userType">Tipo de Usuário:</label>
+                <select id="userType" name="userType" onchange="toggleFields()" required>
+                    <option value="">Selecione</option>
+                    <option value="aluno">Aluno</option>
+                    <option value="professor">Professor</option>
+                </select>
+                <div class="error-message" id="userTypeError"></div>
+            </div>
+
+            <!-- Campos comuns -->
+            <div class="form-group">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" placeholder="Nome completo" onblur="validateField(this)" required>
+                <div class="error-message" id="nomeError"></div>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="exemplo@dominio.com" onblur="validateField(this)" required>
+                <div class="error-message" id="emailError"></div>
+            </div>
+            <div class="form-group">
+                <label for="dataNascimento">Data Nascimento:</label>
+                <input type="text" id="dataNascimento" name="dataNascimento" placeholder="dd/mm/aaaa" onblur="validateField(this)" required>
+                <div class="error-message" id="dataNascimentoError"></div>
+            </div>
+            <div class="form-group">
+                <label for="telefoneFixo">Telefone Fixo:</label>
+                <input type="text" id="telefoneFixo" name="telefoneFixo" placeholder="(xx)xxxx-xxxx" onblur="validateField(this)" required>
+                <div class="error-message" id="telefoneFixoError"></div>
+            </div>
+            <div class="form-group">
+                <label for="telefoneCelular">Telefone Celular:</label>
+                <input type="text" id="telefoneCelular" name="telefoneCelular" placeholder="(xx)xxxx-xxxx" onblur="validateField(this)" required>
+                <div class="error-message" id="telefoneCelularError"></div>
+            </div>
+            
+            <!-- Campos específicos para o tipo de usuário -->
+            <div id="alunoFields" class="user-specific-fields">
+                <div class="form-group">
+                    <label for="curso">Curso:</label>
+                    <input type="text" id="curso" name="curso" placeholder="Nome do curso" onblur="validateField(this)">
+                    <div class="error-message" id="cursoError"></div>
+                </div>
+            </div>
+
+            <div id="professorFields" class="user-specific-fields">
+                <div class="form-group">
+                    <label for="areaAtuacao">Área de Atuação:</label>
+                    <input type="text" id="areaAtuacao" name="areaAtuacao" placeholder="Área de atuação" onblur="validateField(this)">
+                    <div class="error-message" id="areaAtuacaoError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="lattes">Lattes:</label>
+                    <input type="text" id="lattes" name="lattes" placeholder="Link do Lattes" onblur="validateField(this)">
+                    <div class="error-message" id="lattesError"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="matricula">Matrícula:</label>
+                <input type="text" id="matricula" name="matricula" placeholder="Número da matrícula" onblur="validateField(this)" required>
+                <div class="error-message" id="matriculaError"></div>
+            </div>
+
+            <button type="submit">Enviar</button>
+            <button type="submit">Redefinir</button>
+            <button onclick="window.history.back();">Voltar</button>
+        </form>
+    </div>
+    <script>
+        function toggleFields() {
+            const userType = document.getElementById('userType').value;
+            document.getElementById('alunoFields').style.display = (userType === 'aluno') ? 'block' : 'none';
+            document.getElementById('professorFields').style.display = (userType === 'professor') ? 'block' : 'none';
+        }
+
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            const fields = ['nome', 'email', 'dataNascimento', 'telefoneFixo', 'telefoneCelular', 'matricula'];
+            const userType = document.getElementById('userType').value;
+            let formValid = true;
+
+            fields.forEach(field => {
+                const input = document.getElementById(field);
+                if (!validateField(input)) {
+                    formValid = false;
+                }
+            });
+
+            if (userType === 'aluno') {
+                const alunoFields = ['curso'];
+                alunoFields.forEach(field => {
+                    const input = document.getElementById(field);
+                    if (!validateField(input)) {
+                        formValid = false;
+                    }
+                });
+            } else if (userType === 'professor') {
+                const professorFields = ['areaAtuacao', 'lattes'];
+                professorFields.forEach(field => {
+                    const input = document.getElementById(field);
+                    if (!validateField(input)) {
+                        formValid = false;
+                    }
+                });
+            }
+
+            if (!formValid) {
+                event.preventDefault();
+            }
+        });
+
+        function validateField(input) {
+            let valid = true;
+            const errorElement = document.getElementById(`${input.id}Error`);
+            errorElement.textContent = '';
+
+            if (!input.value.trim()) {
+                errorElement.textContent = 'Este campo é obrigatório.';
+                valid = false;
+            } else {
+                switch (input.id) {
+                    case 'email':
+                        valid = validateEmail(input.value);
+                        if (!valid) errorElement.textContent = 'Email inválido.';
+                        break;
+                    case 'dataNascimento':
+                        valid = validateDate(input.value);
+                        if (!valid) errorElement.textContent = 'Data de nascimento inválida.';
+                        break;
+                    case 'telefoneFixo':
+                    case 'telefoneCelular':
+                        valid = validatePhone(input.value);
+                        if (!valid) errorElement.textContent = 'Telefone inválido.';
+                        break;
+                }
+            }
+
+            return valid;
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function validateDate(date) {
+            const re = /^\d{2}\/\d{2}\/\d{4}$/;
+            return re.test(date);
+        }
+
+        function validatePhone(phone) {
+            const re = /^\(\d{2}\)\d{4,5}-\d{4}$/;
+            return re.test(phone);
+        }
+    </script>
+</body>
+</html>
