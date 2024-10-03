@@ -7,22 +7,43 @@
     <style>
         body {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: white;
-            color: lightblue;
-            font-size: 2rem;
+            background-color: black; /* Fundo preto */
+            color: red; /* Cor do texto vermelha */
             font-family: Arial, sans-serif;
+        }
+        h1 {
+            font-size: 4rem; /* Tamanho maior da letra */
+            padding: 10px;
+            color: yellow; /* Cor do texto do letreiro amarela */
+            white-space: nowrap; /* Impedir que o texto quebre a linha */
+        }
+        .back-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            color: black;
+            background-color: lime; /* Cor de fundo verde-limão */
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .back-button:hover {
+            background-color: magenta; /* Cor extrema ao passar o mouse */
         }
     </style>
 </head>
 <body>
     <div id="root"></div>
+    
     <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-    
+
     <script type="text/babel">
         const Letreiro = () => {
             const text = "Venha estudar na Fatec";
@@ -30,7 +51,6 @@
 
             React.useEffect(() => {
                 let index = 0;
-
                 const interval = setInterval(() => {
                     if (index < text.length) {
                         setDisplayedText((prev) => prev + text[index]);
@@ -50,6 +70,9 @@
             return (
                 <div>
                     <Letreiro />
+                    <button className="back-button" onClick={() => window.history.back()}>
+                        Voltar
+                    </button>
                 </div>
             );
         };
